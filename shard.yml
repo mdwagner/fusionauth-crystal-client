@@ -1,0 +1,13 @@
+name: fusionauth_client
+version: 0.1.0
+
+authors:
+  - Brian Pontarelli <brian@fusionauth.io>
+  - Daniel DeGroff <daniel@fusionauth.io>
+
+description: |
+  This library contains the Crystal client library that helps you connect your application to FusionAuth.
+
+crystal: 0.35.1
+
+license: Apache-2.0
