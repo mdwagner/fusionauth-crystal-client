@@ -14,6 +14,7 @@
 
 require "base64"
 require "json"
+require "uri"
 require "http/client"
 require "http/headers"
 require "http/params"
@@ -70,6 +71,20 @@ module FusionAuth
     end
     {% end %}
 
+    def header(name : String, value : String)
+      @client.before_request do |request|
+        request.headers[name] = value
+      end
+      self
+    end
+
+    def headers(headers : Hash)
+      @client.before_request do |request|
+        request.headers.merge!(headers)
+      end
+      self
+    end
+
     def uri(uri : String)
       @client.before_request do |request|
         request.path = uri
@@ -88,10 +103,23 @@ module FusionAuth
     #              be used to set in the request using <code>ZonedDateTime.toInstant().toEpochMilli()</code>
     # @return This.
     #
-    def url_parameter(name : String, value : String)
-      @client.before_request do |request|
-        request.query_params.add(name, value)
+    def url_parameter(name : String?, value)
+      if name.nil?
+        return self
       end
+
+      @client.before_request do |request|
+        if value.is_a?(Array)
+          (values = value).each do |x|
+            if x.responds_to?(:to_s)
+              request.query_params.add(name.not_nil!, x.to_s.strip)
+            end
+          end
+        elsif value.responds_to?(:to_s)
+          request.query_params.add(name.not_nil!, value.to_s.strip)
+        end
+      end
+
       self
     end
 
@@ -106,10 +134,15 @@ module FusionAuth
     # @param value The url path segment. A nil value will be ignored.
     # @return This.
     #
-    def url_segment(value : String)
-      @client.before_request do |request|
-        request.path += "/#{value.strip}"
+    def url_segment(value : String?)
+      if value.nil?
+        return self
       end
+
+      @client.before_request do |request|
+        request.path += "/#{value.not_nil!.strip}"
+      end
+
       self
     end
 
@@ -119,6 +152,15 @@ module FusionAuth
 
       @client.before_request do |request|
         @body_handler.not_nil!.handle_request(request)
+
+        if request.path.empty?
+          raise ArgumentError.new("You must specify a URL")
+        end
+
+        if request.method.nil?
+          raise ArgumentError.new("You must specify a HTTP method")
+        end
+
         req = request
       end
 
