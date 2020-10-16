@@ -23,10 +23,9 @@ module FusionAuth
   class RESTClient
     @client : HTTP::Client
     @body_handler : BodyHandler? = nil
-    @tls : HTTP::Client::TLSContext? = nil
 
     def initialize(uri : URI)
-      @client = HTTP::Client.new(uri, @tls)
+      @client = HTTP::Client.new(uri)
       @client.connect_timeout = 1000
       @client.read_timeout = 2000
     end
@@ -47,8 +46,8 @@ module FusionAuth
       self
     end
 
-    def certificate(certificate : HTTP::Client::TLSContext)
-      @tls = certificate
+    def certificate
+      yield @client.tls?
       self
     end
 
@@ -104,9 +103,7 @@ module FusionAuth
     # @return This.
     #
     def url_parameter(name : String?, value)
-      if name.nil?
-        return self
-      end
+      return self if name.nil?
 
       @client.before_request do |request|
         if value.is_a?(Array)
@@ -135,9 +132,7 @@ module FusionAuth
     # @return This.
     #
     def url_segment(value : String?)
-      if value.nil?
-        return self
-      end
+      return self value.nil?
 
       @client.before_request do |request|
         request.path += "/#{value.not_nil!.strip}"
@@ -146,10 +141,8 @@ module FusionAuth
       self
     end
 
-    # TODO
     def go
-      req : HTTP::Request? = nil
-
+      req = nil
       @client.before_request do |request|
         @body_handler.not_nil!.handle_request(request)
 
@@ -164,21 +157,42 @@ module FusionAuth
         req = request
       end
 
-      response = @client.exec(req.not_nil!)
+      response = ClientResponse.new
 
-      @client.close
+      begin
+        http_response = @client.exec(req.not_nil!)
 
-      # ...
+        response.status = http_response.status_code
+        is_body_permitted = http_response.class.mandatory_body?(http_response.status)
+        is_json = http_response.content_type == "application/json"
+
+        if http_response.success?
+          if is_body_permitted && is_json && http_response.body_io?
+            response.success_response = JSON.parse(http_response.body_io)
+          end
+        else
+          if is_body_permitted && is_json && http_response.body_io?
+            response.error_response = JSON.parse(http_response.body_io)
+          end
+        end
+      rescue ex
+        response.exception = ex
+      end
+
+      response
     end
   end
 
-  # class ClientResponse
-  #   property url, request, method, status, success_response, error_response, exception
+  class ClientResponse
+    property status : Int32 = -1
+    property success_response : JSON::Any? = nil
+    property error_response : JSON::Any? = nil
+    property exception : Exception? = nil
 
-  #   def was_successful
-  #     @status >= 200 && @status <= 299
-  #   end
-  # end
+    def was_successful
+      @status >= 200 && @status <= 299
+    end
+  end
 
   alias BodyHandler = JSONBodyHandler | FormDataBodyHandler
 
