@@ -185,7 +185,11 @@ module FusionAuth
     property exception : Exception? = nil
 
     def was_successful
-      @status >= 200 && @status <= 299
+      if @status != -1
+        HTTP::Status.new(@status).success?
+      else
+        false
+      end
     end
   end
 
