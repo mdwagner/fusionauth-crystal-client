@@ -23,6 +23,8 @@ module FusionAuth
   class RESTClient
     @client : HTTP::Client
     @body_handler : BodyHandler? = nil
+    @method : String? = nil
+    @path : String? = nil
 
     def initialize(uri : URI)
       @client = HTTP::Client.new(uri)
@@ -63,9 +65,7 @@ module FusionAuth
 
     {% for method in %w(delete get patch post put) %}
     def {{method.id}}
-      @client.before_request do |request|
-        request.method = {{method.upcase}}
-      end
+      @method = {{method.upcase}}
       self
     end
     {% end %}
@@ -85,9 +85,7 @@ module FusionAuth
     end
 
     def uri(uri : String)
-      @client.before_request do |request|
-        request.path = uri
-      end
+      @path = uri
       self
     end
 
@@ -142,37 +140,34 @@ module FusionAuth
     end
 
     def go
-      req = nil
+      if @path.nil?
+        raise ArgumentError.new("You must specify a URL")
+      end
+
+      if @method.nil?
+        raise ArgumentError.new("You must specify a HTTP method")
+      end
+
       @client.before_request do |request|
-        @body_handler.not_nil!.handle_request(request)
-
-        if request.path.empty?
-          raise ArgumentError.new("You must specify a URL")
-        end
-
-        if request.method.nil?
-          raise ArgumentError.new("You must specify a HTTP method")
-        end
-
-        req = request
+        @body_handler.try &.handle_request(request)
       end
 
       response = ClientResponse.new
 
       begin
-        http_response = @client.exec(req.not_nil!)
+        http_response = @client.exec(HTTP::Request.new(@method.not_nil!, @path.not_nil!))
 
         response.status = http_response.status_code
         is_body_permitted = http_response.class.mandatory_body?(http_response.status)
         is_json = http_response.content_type == "application/json"
 
         if http_response.success?
-          if is_body_permitted && is_json && http_response.body_io?
-            response.success_response = JSON.parse(http_response.body_io)
+          if is_body_permitted && is_json && http_response.body?
+            response.success_response = JSON.parse(http_response.body)
           end
         else
-          if is_body_permitted && is_json && http_response.body_io?
-            response.error_response = JSON.parse(http_response.body_io)
+          if is_body_permitted && is_json && http_response.body?
+            response.error_response = JSON.parse(http_response.body)
           end
         end
       rescue ex

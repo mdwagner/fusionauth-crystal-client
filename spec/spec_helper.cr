@@ -1,2 +1,5 @@
 require "spec"
-require "../src/fusionauth-crystal-client"
+require "webmock"
+require "../src/fusionauth"
+
+Spec.before_each &->WebMock.reset
