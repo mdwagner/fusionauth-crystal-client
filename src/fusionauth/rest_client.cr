@@ -197,7 +197,7 @@ module FusionAuth
   alias BodyHandler = JSONBodyHandler | FormDataBodyHandler
 
   class FormDataBodyHandler
-    @body : Hash(String, String) | NamedTuple
+    @body : Hash(String, String | Array(String))
 
     def initialize(@body)
     end
