@@ -40,8 +40,8 @@ jobs:
           SEARCH_TYPE: database
           FUSIONAUTH_APP_KICKSTART_FILE: /tmp/spec/kickstart.json
           FUSIONAUTH_KICKSTART_API_KEY: "123456789"
-        volumes:
-          - ${{ github.workspace }}/spec:/tmp/spec
+        options: >-
+          -v /__w/fusionauth-crystal-client/fusionauth-crystal-client/spec:/tmp/spec:rw
 
     steps:
     - name: Install Docker in Alpine
