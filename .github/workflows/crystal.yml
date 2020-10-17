@@ -49,7 +49,7 @@ jobs:
 
     - name: Container testing
       run: |
-        docker exec -dt ${{ job.services.fusionauth.id }} cat /tmp/spec/kickstart.json
+        docker exec -it ${{ job.services.fusionauth.id }} sh -c 'cat /tmp/spec/kickstart.json; exit $?'
 
     - name: Checkout code
       uses: actions/checkout@v2
