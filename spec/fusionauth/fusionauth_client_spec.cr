@@ -22,7 +22,7 @@ describe FusionAuth::FusionAuthClient do
 
   if ENV["FUSIONAUTH_API_KEY"]? && ENV["FUSIONAUTH_URL"]?
     it "should test application crud" do
-      # WebMock.allow_net_connect = true
+      WebMock.allow_net_connect = true
 
       id = UUID.random.to_s
       client = FusionAuth::FusionAuthClient.new(ENV["FUSIONAUTH_API_KEY"], ENV["FUSIONAUTH_URL"])
