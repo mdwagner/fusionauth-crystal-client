@@ -18,4 +18,15 @@ describe FusionAuth::FusionAuthClient do
     success_response = response.success_response.not_nil!
     success_response["abc"].as_s.should eq("123")
   end
+
+  if ENV["FUSIONAUTH_API_KEY"]? && ENV["FUSIONAUTH_URL"]?
+    it "should test application crud" do
+      WebMock.allow_net_connect = true
+
+      client = FusionAuth::FusionAuthClient.new(ENV["FUSIONAUTH_API_KEY"], ENV["FUSIONAUTH_URL"])
+      response = client.retrieve_email_templates
+
+      response.status.should eq(200)
+    end
+  end
 end

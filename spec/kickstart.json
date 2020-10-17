@@ -1,0 +1,10 @@
+{
+  "variables": {
+    "apiKey": "#{ENV.FUSIONAUTH_KICKSTART_API_KEY}"
+  },
+  "apiKeys": [
+    {
+      "key": "#{apiKey}"
+    }
+  ]
+}
