@@ -39,7 +39,7 @@ jobs:
           FUSIONAUTH_APP_URL: http://fusionauth:9011
           SEARCH_TYPE: database
           FUSIONAUTH_APP_KICKSTART_FILE: /tmp/kickstart.json # TODO: apiKey is not loading correctly
-          FUSIONAUTH_KICKSTART_API_KEY: 0123456789
+          FUSIONAUTH_KICKSTART_API_KEY: "123456789"
         volumes:
           - ${{ github.workspace }}/spec/kickstart.json:/tmp/kickstart.json
 
@@ -54,4 +54,4 @@ jobs:
       run: crystal spec
       env:
         FUSIONAUTH_URL: http://fusionauth:9011
-        FUSIONAUTH_API_KEY: 0123456789
+        FUSIONAUTH_API_KEY: "123456789"
