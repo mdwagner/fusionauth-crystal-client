@@ -24,7 +24,7 @@ describe FusionAuth::FusionAuthClient do
     it "should test application crud" do
       WebMock.allow_net_connect = true
 
-      id = UUID.random
+      id = UUID.random.to_s
       client = FusionAuth::FusionAuthClient.new(ENV["FUSIONAUTH_API_KEY"], ENV["FUSIONAUTH_URL"])
       response = client.create_application(id, {
         "application" => {
