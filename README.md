@@ -23,11 +23,12 @@ require "fusionauth_client/fusionauth_client"
 # Construct the FusionAuth Client
 client = FusionAuth::FusionAuthClient.new(
   "<YOUR_API_KEY>",
-  "http://localhost:9011"
+  "<YOUR_FUSIONAUTH_URL>"
 )
+application_id = "<YOUR_APP_ID>"
 
 # Create a user + registration
-id = UUID.random
+id = UUID.random.to_s
 client.register(id, {
   "user" => {
     "firstName" => "Crystal",
@@ -51,7 +52,7 @@ response = client.login({
   "password" => "password",
   "applicationId" => application_id,
 })
-user = response.success.response.user
+user = response.success_response.not_nil!["user"]
 ```
 
 ## Contributing
