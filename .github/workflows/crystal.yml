@@ -32,13 +32,14 @@ jobs:
           DATABASE_URL: jdbc:postgresql://postgres:5432/fusionauth
           DATABASE_ROOT_USER: postgres
           DATABASE_ROOT_PASSWORD: postgres
-          DATABASE_USER: fusionauth
+          DATABASE_USERNAME: fusionauth
           DATABASE_PASSWORD: fusionauth
-          FUSIONAUTH_MEMORY: 512M
-          FUSIONAUTH_SEARCH_ENGINE_TYPE: database
-          FUSIONAUTH_URL: http://fusionauth:9011
+          FUSIONAUTH_APP_MEMORY: 512M
+          FUSIONAUTH_APP_RUNTIME_MODE: development
+          FUSIONAUTH_APP_URL: http://fusionauth:9011
+          SEARCH_TYPE: database
           FUSIONAUTH_APP_KICKSTART_FILE: /tmp/kickstart.json
-          FUSIONAUTH_KICKSTART_API_KEY: 4737ea8520bd454caabb7cb3d36e14bc1832c0d3f70a4189b82598670f11b1bd
+          FUSIONAUTH_KICKSTART_API_KEY: 0123456789
         volumes:
           - ${{ github.workspace }}/spec/kickstart.json:/tmp/kickstart.json
 
@@ -53,9 +54,4 @@ jobs:
       run: crystal spec
       env:
         FUSIONAUTH_URL: http://fusionauth:9011
-        FUSIONAUTH_API_KEY: 4737ea8520bd454caabb7cb3d36e14bc1832c0d3f70a4189b82598670f11b1bd
-
-    - name: Dump docker logs on failure
-      run: docker logs
-      if: failure()
-      # uses: jwalton/gh-docker-logs@v1
+        FUSIONAUTH_API_KEY: 0123456789

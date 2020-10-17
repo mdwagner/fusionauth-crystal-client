@@ -11,8 +11,3 @@ description: |
 crystal: 0.35.1
 
 license: Apache-2.0
-
-development_dependencies:
-  webmock:
-    github: manastech/webmock.cr
-    branch: master

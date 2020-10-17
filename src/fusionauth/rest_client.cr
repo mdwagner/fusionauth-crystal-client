@@ -103,15 +103,24 @@ module FusionAuth
     def url_parameter(name : String?, value)
       return self if name.nil?
 
-      @client.before_request do |request|
-        if value.is_a?(Array)
-          (values = value).each do |x|
-            if x.responds_to?(:to_s)
-              request.query_params.add(name.not_nil!, x.to_s.strip)
-            end
+      parameters = [] of String
+
+      case value
+      when Array
+        value.each do |item|
+          if item.responds_to?(:to_s)
+            parameters << item.to_s.strip
           end
-        elsif value.responds_to?(:to_s)
-          request.query_params.add(name.not_nil!, value.to_s.strip)
+        end
+      else
+        if value.responds_to?(:to_s)
+          parameters << value.to_s.strip
+        end
+      end
+
+      @client.before_request do |request|
+        parameters.each do |param|
+          request.query_params.add(name.not_nil!, param)
         end
       end
 
