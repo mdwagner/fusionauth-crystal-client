@@ -47,10 +47,6 @@ jobs:
     - name: Install Docker in Alpine
       run: apk update && apk add --no-cache docker-cli bash
 
-    - name: Container testing
-      run: |
-        docker exec -it ${{ job.services.fusionauth.id }} sh -c 'cat /tmp/spec/kickstart.json; exit $?'
-
     - name: Checkout code
       uses: actions/checkout@v2
 
