@@ -23,10 +23,33 @@ describe FusionAuth::FusionAuthClient do
     it "should test application crud" do
       WebMock.allow_net_connect = true
 
+      id = UUID.random
       client = FusionAuth::FusionAuthClient.new(ENV["FUSIONAUTH_API_KEY"], ENV["FUSIONAUTH_URL"])
-      response = client.retrieve_email_templates
+      response = client.create_application(id, {
+        "application" => {
+          "name" => "Test application",
+          "roles" => [
+            {
+              "isDefault" => false,
+              "name" => "admin",
+              "isSuperRole" => true,
+              "description" => "Admin role",
+            },
+            {
+              "isDefault" => true,
+              "name" => "user",
+              "description" => "User role",
+            },
+          ],
+        }
+      })
+      response.was_successful.should be_true
+      response.success_response.should_not be_nil
 
-      response.status.should eq(200)
+      success_response = response.success_response.not_nil!
+      success_response["application"]["name"].as_s.should eq("Test application")
+      success_response["application"]["roles"][0]["name"].as_s.should eq("admin")
+      success_response["application"]["roles"][1]["name"].as_s.should eq("user")
     end
   end
 end
