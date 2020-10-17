@@ -47,6 +47,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Docker logging
+      run: |
+        echo "${{ toJson(job) }}"
+        docker logs "${{ job.services.fusionauth.id }}"
+
     - name: Install dependencies
       run: shards install
 
