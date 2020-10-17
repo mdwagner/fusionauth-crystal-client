@@ -44,7 +44,12 @@ describe FusionAuth::FusionAuthClient do
           ],
         }
       })
-      puts response.error_response.not_nil!
+
+      ex = response.exception.not_nil!
+      puts ex
+      puts ex.message
+      pp ex.backtrace
+
       response.was_successful.should be_true
       response.success_response.should_not be_nil
 
