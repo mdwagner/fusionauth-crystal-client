@@ -1,4 +1,5 @@
 require "../spec_helper"
+require "uuid"
 
 describe FusionAuth::FusionAuthClient do
   it "should retrieve email templates" do
