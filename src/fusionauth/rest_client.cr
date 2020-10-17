@@ -130,7 +130,7 @@ module FusionAuth
     # @return This.
     #
     def url_segment(value : String?)
-      return self value.nil?
+      return self if value.nil?
 
       @client.before_request do |request|
         request.path += "/#{value.not_nil!.strip}"
