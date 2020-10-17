@@ -50,6 +50,7 @@ jobs:
     - name: Docker logging
       run: |
         echo "${{ toJson(job) }}"
+        apk update && apk add --no-cache docker-cli
         docker logs "${{ job.services.fusionauth.id }}"
 
     - name: Install dependencies
