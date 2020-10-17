@@ -54,7 +54,7 @@ describe FusionAuth::FusionAuthClient do
     })
     response.was_successful.should be_true
     response = client.retrieve_application(id)
-    response.should handle_response
+    response.was_successful.should be_true
     response.success_response.not_nil!["application"]["roles"][1]["isDefault"].as_bool.should be_false
 
     # Delete the role
