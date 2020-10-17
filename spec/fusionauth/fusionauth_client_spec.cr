@@ -44,6 +44,7 @@ describe FusionAuth::FusionAuthClient do
           ],
         }
       })
+      puts response.error_response.not_nil!
       response.was_successful.should be_true
       response.success_response.should_not be_nil
 
