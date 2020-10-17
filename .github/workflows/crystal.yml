@@ -30,7 +30,7 @@ jobs:
           - "9011:9011"
         env:
           DATABASE_URL: jdbc:postgresql://postgres:5432/fusionauth
-          DATABASE_ROOT_USER: postgres
+          DATABASE_ROOT_USERNAME: postgres
           DATABASE_ROOT_PASSWORD: postgres
           DATABASE_USERNAME: fusionauth
           DATABASE_PASSWORD: fusionauth
@@ -38,20 +38,17 @@ jobs:
           FUSIONAUTH_APP_RUNTIME_MODE: development
           FUSIONAUTH_APP_URL: http://fusionauth:9011
           SEARCH_TYPE: database
-          FUSIONAUTH_APP_KICKSTART_FILE: /tmp/kickstart.json # TODO: apiKey is not loading correctly
+          FUSIONAUTH_APP_KICKSTART_FILE: /tmp/spec2/kickstart.json
           FUSIONAUTH_KICKSTART_API_KEY: "123456789"
         volumes:
-          - ${{ github.workspace }}/spec/kickstart.json:/tmp/kickstart.json
+          - ${{ github.workspace }}/spec:/tmp/spec
 
     steps:
+    - name: Install Docker in Alpine
+      run: apk update && apk add --no-cache docker-cli
+
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Docker logging
-      run: |
-        echo "${{ toJson(job) }}"
-        apk update && apk add --no-cache docker-cli
-        docker logs "${{ job.services.fusionauth.id }}"
 
     - name: Install dependencies
       run: shards install
@@ -61,3 +58,7 @@ jobs:
       env:
         FUSIONAUTH_URL: http://fusionauth:9011
         FUSIONAUTH_API_KEY: "123456789"
+
+    - name: Dump docker logs on failure
+      uses: jwalton/gh-docker-logs@v1
+      if: failure()
