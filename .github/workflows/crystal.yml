@@ -38,16 +38,14 @@ jobs:
           FUSIONAUTH_APP_RUNTIME_MODE: development
           FUSIONAUTH_APP_URL: http://fusionauth:9011
           SEARCH_TYPE: database
-          FUSIONAUTH_APP_KICKSTART_FILE: /tmp/spec2/kickstart.json
+          FUSIONAUTH_APP_KICKSTART_FILE: /tmp/spec/kickstart.json
           FUSIONAUTH_KICKSTART_API_KEY: "123456789"
         volumes:
           - ${{ github.workspace }}/spec:/tmp/spec
 
     steps:
     - name: Install Docker in Alpine
-      run: |
-        apk update && apk add --no-cache docker-cli
-        apk add --no-cache bash
+      run: apk update && apk add --no-cache docker-cli bash
 
     - name: Checkout code
       uses: actions/checkout@v2
