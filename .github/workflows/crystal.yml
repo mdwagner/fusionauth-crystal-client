@@ -45,7 +45,9 @@ jobs:
 
     steps:
     - name: Install Docker in Alpine
-      run: apk update && apk add --no-cache docker-cli
+      run: |
+        apk update && apk add --no-cache docker-cli
+        apk add --no-cache bash
 
     - name: Checkout code
       uses: actions/checkout@v2
