@@ -1,6 +1,5 @@
 require "../spec_helper"
 require "uuid"
-require "log"
 
 describe FusionAuth::FusionAuthClient do
   it "should retrieve email templates" do
@@ -46,8 +45,7 @@ describe FusionAuth::FusionAuthClient do
         }
       })
 
-      ex = response.exception.not_nil!
-      Log.error(exception: ex) { "error" }
+      response.exception.should be_nil
 
       response.was_successful.should be_true
       response.success_response.should_not be_nil
