@@ -40,7 +40,7 @@ jobs:
           FUSIONAUTH_APP_KICKSTART_FILE: /tmp/kickstart.json
           FUSIONAUTH_KICKSTART_API_KEY: 4737ea8520bd454caabb7cb3d36e14bc1832c0d3f70a4189b82598670f11b1bd
         volumes:
-          - ./spec/kickstart.json:/tmp/kickstart.json
+          - ${{ github.workspace }}/spec/kickstart.json:/tmp/kickstart.json
 
     steps:
     - name: Checkout code
