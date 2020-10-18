@@ -89,4 +89,73 @@ describe FusionAuth::FusionAuthClient do
     response.success_response.should be_nil
     response.status.should eq(404)
   end
+
+  it "should test email template crud" do
+    id = UUID.random.to_s
+    client = FusionAuth::FusionAuthClient.new(ENV["FUSIONAUTH_API_KEY"], ENV["FUSIONAUTH_URL"])
+
+    # Create the email template
+    response = client.create_email_template(id, {
+      "emailTemplate" => {
+        "defaultFromName" => "Dude",
+        "defaultHtmlTemplate" => "HTML Template",
+        "defaultSubject" => "Subject",
+        "defaultTextTemplate" => "Text Template",
+        "fromEmail" => "from@fusionauth.io",
+        "localizedFromNames" => {
+          "fr" => "From fr"
+        },
+        "name" => "Test Template",
+      },
+    })
+    response.was_successful.should be_true
+
+    # Retrieve the email template
+    response = client.retrieve_email_template(id)
+    response.was_successful.should be_true
+    response.success_response.not_nil!["emailTemplate"]["name"].as_s.should eq("Test Template")
+
+    # Update the email template
+    response = client.update_email_template(id, {
+      "emailTemplate" => {
+        "defaultFromName" => "Dude",
+        "defaultHtmlTemplate" => "HTML Template",
+        "defaultSubject" => "Subject",
+        "defaultTextTemplate" => "Text Template",
+        "fromEmail" => "from@fusionauth.io",
+        "localizedFromNames" => {
+          "fr" => "From fr"
+        },
+        "name" => "Test Template updated",
+      },
+    })
+    response.was_successful.should be_true
+    response = client.retrieve_email_template(id)
+    response.was_successful.should be_true
+    response.success_response.not_nil!["emailTemplate"]["name"].as_s.should eq("Test Template updated")
+
+    # Preview it
+    response = client.retrieve_email_template_preview({
+      "emailTemplate" => {
+        "defaultFromName" => "Dude",
+        "defaultHtmlTemplate" => "HTML Template",
+        "defaultSubject" => "Subject",
+        "defaultTextTemplate" => "Text Template",
+        "fromEmail" => "from@fusionauth.io",
+        "localizedFromNames" => {
+          "fr" => "From fr"
+        },
+        "name" => "Test Template updated",
+      },
+      "locale" => "fr",
+    })
+    response.was_successful.should be_true
+    response.success_response.not_nil!["email"]["from"]["display"].as_s.should eq("From fr")
+
+    # Delete the email template
+    response = client.delete_email_template(id)
+    response.success_response.should be_nil
+    response = client.retrieve_email_template(id)
+    response.status.should eq(404)
+  end
 end
