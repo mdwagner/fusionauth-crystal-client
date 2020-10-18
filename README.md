@@ -6,7 +6,7 @@ This shard is the Crystal client library that helps connect Crystal applications
 
 Add this to your application's `shard.yml`:
 
-```crystal
+```yaml
 dependencies:
   fusionauth_client:
     github: FusionAuth/fusionauth-crystal-client
@@ -18,7 +18,7 @@ Once the shard is installed, you can call FusionAuth APIs like this:
 
 ```crystal
 require "uuid"
-require "fusionauth_client/fusionauth_client"
+require "fusionauth_client/fusionauth"
 
 # Construct the FusionAuth Client
 client = FusionAuth::FusionAuthClient.new(
