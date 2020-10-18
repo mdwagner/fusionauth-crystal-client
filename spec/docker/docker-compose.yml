@@ -30,7 +30,7 @@ services:
       FUSIONAUTH_APP_URL: http://fusionauth:9011
       SEARCH_TYPE: database
       FUSIONAUTH_APP_KICKSTART_FILE: /tmp/kickstart.json
-      FUSIONAUTH_KICKSTART_API_KEY: 123
+      FUSIONAUTH_KICKSTART_API_KEY: "123456789"
     networks:
      - db
     restart: unless-stopped
@@ -38,7 +38,7 @@ services:
       - 9011:9011
     volumes:
       - fa_config:/usr/local/fusionauth/config
-      - ../spec/kickstart.json:/tmp/kickstart.json
+      - ./kickstart.json:/tmp/kickstart.json
 
 networks:
   db:

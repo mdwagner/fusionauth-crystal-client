@@ -23,7 +23,7 @@ describe FusionAuth::FusionAuthClient do
         ],
       },
     })
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["application"]["name"].as_s.should eq("Test application")
     response.success_response.not_nil!["application"]["roles"][0]["name"].as_s.should eq("admin")
     response.success_response.not_nil!["application"]["roles"][1]["name"].as_s.should eq("user")
@@ -36,10 +36,10 @@ describe FusionAuth::FusionAuthClient do
         "description" => "New role description",
       },
     })
-    response.was_successful.should be_true
+    response.should be_successful
     application_role = response.success_response.not_nil!
     response = client.retrieve_application(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["application"]["roles"][0]["name"].as_s.should eq("admin")
     response.success_response.not_nil!["application"]["roles"][1]["name"].as_s.should eq("new role")
     response.success_response.not_nil!["application"]["roles"][2]["name"].as_s.should eq("user")
@@ -52,38 +52,38 @@ describe FusionAuth::FusionAuthClient do
         "description" => "New role description",
       },
     })
-    response.was_successful.should be_true
+    response.should be_successful
     response = client.retrieve_application(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["application"]["roles"][1]["isDefault"].as_bool.should be_false
 
     # Delete the role
     client.delete_application_role(id, application_role["role"]["id"].as_s)
-    response.was_successful.should be_true
+    response.should be_successful
     response = client.retrieve_application(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["application"]["roles"][0]["name"].as_s.should eq("admin")
     response.success_response.not_nil!["application"]["roles"][1]["name"].as_s.should eq("user")
 
     # Deactivate the application
     response = client.deactivate_application(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.should be_nil
     response = client.retrieve_application(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["application"]["active"].as_bool.should be_false
 
     # Reactivate the application
     response = client.reactivate_application(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["application"]["active"].as_bool.should be_true
     response = client.retrieve_application(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["application"]["active"].as_bool.should be_true
 
     # Hard delete the application
     response = client.delete_application(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.should be_nil
     response = client.retrieve_application(id)
     response.success_response.should be_nil
@@ -108,11 +108,11 @@ describe FusionAuth::FusionAuthClient do
         "name" => "Test Template",
       },
     })
-    response.was_successful.should be_true
+    response.should be_successful
 
     # Retrieve the email template
     response = client.retrieve_email_template(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["emailTemplate"]["name"].as_s.should eq("Test Template")
 
     # Update the email template
@@ -129,9 +129,9 @@ describe FusionAuth::FusionAuthClient do
         "name" => "Test Template updated",
       },
     })
-    response.was_successful.should be_true
+    response.should be_successful
     response = client.retrieve_email_template(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["emailTemplate"]["name"].as_s.should eq("Test Template updated")
 
     # Preview it
@@ -149,7 +149,7 @@ describe FusionAuth::FusionAuthClient do
       },
       "locale" => "fr",
     })
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["email"]["from"]["display"].as_s.should eq("From fr")
 
     # Delete the email template
@@ -172,11 +172,11 @@ describe FusionAuth::FusionAuthClient do
         "password"  => "password",
       },
     })
-    response.was_successful.should be_true
+    response.should be_successful
 
     # Retrieve the user
     response = client.retrieve_user(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["user"]["email"].as_s.should eq("crystal.client.test@fusionauth.io")
 
     # Update the user
@@ -188,15 +188,15 @@ describe FusionAuth::FusionAuthClient do
         "password"  => "password updated",
       },
     })
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["user"]["email"].as_s.should eq("crystal.client.test+updated@fusionauth.io")
     response = client.retrieve_user(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["user"]["email"].as_s.should eq("crystal.client.test+updated@fusionauth.io")
 
     # Delete the user
     response = client.delete_user(id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.should be_nil
     response = client.retrieve_user(id)
     response.status.should eq(404)
@@ -226,7 +226,7 @@ describe FusionAuth::FusionAuthClient do
         ],
       },
     })
-    response.was_successful.should be_true
+    response.should be_successful
 
     # Create a user + registration
     response = client.register(id, {
@@ -245,7 +245,7 @@ describe FusionAuth::FusionAuthClient do
         "roles"              => %w(user),
       },
     })
-    response.was_successful.should be_true
+    response.should be_successful
 
     # Authenticate the user
     response = client.login({
@@ -253,12 +253,12 @@ describe FusionAuth::FusionAuthClient do
       "password"      => "password",
       "applicationId" => application_id,
     })
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["user"]["email"].as_s.should eq("crystal.client.test@fusionauth.io")
 
     # Retrieve the registration
     response = client.retrieve_registration(id, application_id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["registration"]["roles"][0].as_s.should eq("user")
     response.success_response.not_nil!["registration"]["data"]["foo"].as_s.should eq("bar")
 
@@ -273,11 +273,11 @@ describe FusionAuth::FusionAuthClient do
         "roles"              => %w(admin),
       },
     })
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["registration"]["roles"][0].as_s.should eq("admin")
     response.success_response.not_nil!["registration"]["data"]["foo"].as_s.should eq("bar updated")
     response = client.retrieve_registration(id, application_id)
-    response.was_successful.should be_true
+    response.should be_successful
     response.success_response.not_nil!["registration"]["roles"][0].as_s.should eq("admin")
     response.success_response.not_nil!["registration"]["data"]["foo"].as_s.should eq("bar updated")
 
