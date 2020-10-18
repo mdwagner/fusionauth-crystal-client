@@ -201,4 +201,94 @@ describe FusionAuth::FusionAuthClient do
     response = client.retrieve_user(id)
     response.status.should eq(404)
   end
+
+  it "should test user registration crud and login" do
+    id = UUID.random.to_s
+    application_id = UUID.random.to_s
+    client = FusionAuth::FusionAuthClient.new(ENV["FUSIONAUTH_API_KEY"], ENV["FUSIONAUTH_URL"])
+
+    # Create and application
+    response = client.create_application(application_id, {
+      "application" => {
+        "name" => "Test application",
+        "roles" => [
+          {
+            "isDefault" => false,
+            "name" => "admin",
+            "isSuperRole" => true,
+            "description" => "Admin role"
+          },
+          {
+            "isDefault" => true,
+            "name" => "user",
+            "description" => "User role"
+          }
+        ]
+      },
+    })
+    response.was_successful.should be_true
+
+    # Create a user + registration
+    response = client.register(id, {
+      "user" => {
+        "firstName" => "Crystal",
+        "lastName" => "Client",
+        "email" => "crystal.client.test@fusionauth.io",
+        "password" => "password"
+      },
+      "registration" => {
+        "applicationId" => application_id,
+        "data" => {
+          "foo" => "bar"
+        },
+        "preferredLanguages" => %w(en fr),
+        "roles" => %w(user)
+      }
+    })
+    response.was_successful.should be_true
+
+    # Authenticate the user
+    response = client.login({
+      "loginId" => "crystal.client.test@fusionauth.io",
+      "password" => "password",
+      "applicationId" => application_id
+    })
+    response.was_successful.should be_true
+    response.success_response.not_nil!["user"]["email"].as_s.should eq("crystal.client.test@fusionauth.io")
+
+    # Retrieve the registration
+    response = client.retrieve_registration(id, application_id)
+    response.was_successful.should be_true
+    response.success_response.not_nil!["registration"]["roles"][0].as_s.should eq("user")
+    response.success_response.not_nil!["registration"]["data"]["foo"].as_s.should eq("bar")
+
+    # Update the registration
+    response = client.update_registration(id, {
+      "registration" => {
+        "applicationId" => application_id,
+        "data" => {
+          "foo" => "bar updated"
+        },
+        "preferredLanguages" => %w(en fr),
+        "roles" => %w(admin)
+      }
+    })
+    response.was_successful.should be_true
+    response.success_response.not_nil!["registration"]["roles"][0].as_s.should eq("admin")
+    response.success_response.not_nil!["registration"]["data"]["foo"].as_s.should eq("bar updated")
+    response = client.retrieve_registration(id, application_id)
+    response.was_successful.should be_true
+    response.success_response.not_nil!["registration"]["roles"][0].as_s.should eq("admin")
+    response.success_response.not_nil!["registration"]["data"]["foo"].as_s.should eq("bar updated")
+
+    # Delete the registration
+    response = client.delete_registration(id, application_id)
+    response.success_response.should be_nil
+    response = client.retrieve_registration(id, application_id)
+    response.status.should eq(404)
+
+    # Delete the application & user as clean-up
+    client.delete_application(application_id)
+    client.delete_user(id)
+  end
 end
