@@ -158,4 +158,47 @@ describe FusionAuth::FusionAuthClient do
     response = client.retrieve_email_template(id)
     response.status.should eq(404)
   end
+
+  it "should test user crud" do
+    id = UUID.random.to_s
+    client = FusionAuth::FusionAuthClient.new(ENV["FUSIONAUTH_API_KEY"], ENV["FUSIONAUTH_URL"])
+
+    # Create a user
+    response = client.create_user(id, {
+      "user" => {
+        "firstName" => "Crystal",
+        "lastName" => "Client",
+        "email" => "crystal.client.test@fusionauth.io",
+        "password" => "password",
+      },
+    })
+    response.was_successful.should be_true
+
+    # Retrieve the user
+    response = client.retrieve_user(id)
+    response.was_successful.should be_true
+    response.success_response.not_nil!["user"]["email"].as_s.should eq("crystal.client.test@fusionauth.io")
+
+    # Update the user
+    response = client.update_user(id, {
+      "user" => {
+        "firstName" => "Crystal updated",
+        "lastName" => "Client updated",
+        "email" => "crystal.client.test+updated@fusionauth.io",
+        "password" => "password updated",
+      },
+    })
+    response.was_successful.should be_true
+    response.success_response.not_nil!["user"]["email"].as_s.should eq("crystal.client.test+updated@fusionauth.io")
+    response = client.retrieve_user(id)
+    response.was_successful.should be_true
+    response.success_response.not_nil!["user"]["email"].as_s.should eq("crystal.client.test+updated@fusionauth.io")
+
+    # Delete the user
+    response = client.delete_user(id)
+    response.was_successful.should be_true
+    response.success_response.should be_nil
+    response = client.retrieve_user(id)
+    response.status.should eq(404)
+  end
 end
