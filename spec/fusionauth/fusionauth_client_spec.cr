@@ -159,7 +159,6 @@ describe FusionAuth::FusionAuthClient do
     response.status.should eq(404)
   end
 
-  # TODO: fix updating user
   it "should test user crud" do
     id = UUID.random.to_s
     client = FusionAuth::FusionAuthClient.new(ENV["FUSIONAUTH_API_KEY"], ENV["FUSIONAUTH_URL"])
@@ -186,7 +185,7 @@ describe FusionAuth::FusionAuthClient do
         "firstName" => "Crystal updated",
         "lastName"  => "Client updated",
         "email"     => "crystal.client.test+updated@fusionauth.io",
-        # "password"  => "password updated",
+        # "password"  => "password updated", # https://github.com/FusionAuth/fusionauth-issues/issues/758
       },
     })
     response.should be_successful
