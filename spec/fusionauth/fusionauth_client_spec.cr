@@ -7,21 +7,21 @@ describe FusionAuth::FusionAuthClient do
     client = FusionAuth::FusionAuthClient.new(ENV["FUSIONAUTH_API_KEY"], ENV["FUSIONAUTH_URL"])
     response = client.create_application(id, {
       "application" => {
-        "name" => "Test application",
+        "name"  => "Test application",
         "roles" => [
           {
-            "isDefault" => false,
-            "name" => "admin",
+            "isDefault"   => false,
+            "name"        => "admin",
             "isSuperRole" => true,
             "description" => "Admin role",
           },
           {
-            "isDefault" => true,
-            "name" => "user",
+            "isDefault"   => true,
+            "name"        => "user",
             "description" => "User role",
           },
         ],
-      }
+      },
     })
     response.was_successful.should be_true
     response.success_response.not_nil!["application"]["name"].as_s.should eq("Test application")
@@ -31,8 +31,8 @@ describe FusionAuth::FusionAuthClient do
     # Create a new role
     response = client.create_application_role(id, nil, {
       "role" => {
-        "isDefault" => true,
-        "name" => "new role",
+        "isDefault"   => true,
+        "name"        => "new role",
         "description" => "New role description",
       },
     })
@@ -47,8 +47,8 @@ describe FusionAuth::FusionAuthClient do
     # Update the role
     response = client.update_application_role(id, application_role["role"]["id"].as_s, {
       "role" => {
-        "isDefault" => false,
-        "name" => "new role",
+        "isDefault"   => false,
+        "name"        => "new role",
         "description" => "New role description",
       },
     })
@@ -97,13 +97,13 @@ describe FusionAuth::FusionAuthClient do
     # Create the email template
     response = client.create_email_template(id, {
       "emailTemplate" => {
-        "defaultFromName" => "Dude",
+        "defaultFromName"     => "Dude",
         "defaultHtmlTemplate" => "HTML Template",
-        "defaultSubject" => "Subject",
+        "defaultSubject"      => "Subject",
         "defaultTextTemplate" => "Text Template",
-        "fromEmail" => "from@fusionauth.io",
-        "localizedFromNames" => {
-          "fr" => "From fr"
+        "fromEmail"           => "from@fusionauth.io",
+        "localizedFromNames"  => {
+          "fr" => "From fr",
         },
         "name" => "Test Template",
       },
@@ -118,13 +118,13 @@ describe FusionAuth::FusionAuthClient do
     # Update the email template
     response = client.update_email_template(id, {
       "emailTemplate" => {
-        "defaultFromName" => "Dude",
+        "defaultFromName"     => "Dude",
         "defaultHtmlTemplate" => "HTML Template",
-        "defaultSubject" => "Subject",
+        "defaultSubject"      => "Subject",
         "defaultTextTemplate" => "Text Template",
-        "fromEmail" => "from@fusionauth.io",
-        "localizedFromNames" => {
-          "fr" => "From fr"
+        "fromEmail"           => "from@fusionauth.io",
+        "localizedFromNames"  => {
+          "fr" => "From fr",
         },
         "name" => "Test Template updated",
       },
@@ -137,13 +137,13 @@ describe FusionAuth::FusionAuthClient do
     # Preview it
     response = client.retrieve_email_template_preview({
       "emailTemplate" => {
-        "defaultFromName" => "Dude",
+        "defaultFromName"     => "Dude",
         "defaultHtmlTemplate" => "HTML Template",
-        "defaultSubject" => "Subject",
+        "defaultSubject"      => "Subject",
         "defaultTextTemplate" => "Text Template",
-        "fromEmail" => "from@fusionauth.io",
-        "localizedFromNames" => {
-          "fr" => "From fr"
+        "fromEmail"           => "from@fusionauth.io",
+        "localizedFromNames"  => {
+          "fr" => "From fr",
         },
         "name" => "Test Template updated",
       },
@@ -167,9 +167,9 @@ describe FusionAuth::FusionAuthClient do
     response = client.create_user(id, {
       "user" => {
         "firstName" => "Crystal",
-        "lastName" => "Client",
-        "email" => "crystal.client.test@fusionauth.io",
-        "password" => "password",
+        "lastName"  => "Client",
+        "email"     => "crystal.client.test@fusionauth.io",
+        "password"  => "password",
       },
     })
     response.was_successful.should be_true
@@ -183,9 +183,9 @@ describe FusionAuth::FusionAuthClient do
     response = client.update_user(id, {
       "user" => {
         "firstName" => "Crystal updated",
-        "lastName" => "Client updated",
-        "email" => "crystal.client.test+updated@fusionauth.io",
-        "password" => "password updated",
+        "lastName"  => "Client updated",
+        "email"     => "crystal.client.test+updated@fusionauth.io",
+        "password"  => "password updated",
       },
     })
     response.was_successful.should be_true
@@ -210,20 +210,20 @@ describe FusionAuth::FusionAuthClient do
     # Create and application
     response = client.create_application(application_id, {
       "application" => {
-        "name" => "Test application",
+        "name"  => "Test application",
         "roles" => [
           {
-            "isDefault" => false,
-            "name" => "admin",
+            "isDefault"   => false,
+            "name"        => "admin",
             "isSuperRole" => true,
-            "description" => "Admin role"
+            "description" => "Admin role",
           },
           {
-            "isDefault" => true,
-            "name" => "user",
-            "description" => "User role"
-          }
-        ]
+            "isDefault"   => true,
+            "name"        => "user",
+            "description" => "User role",
+          },
+        ],
       },
     })
     response.was_successful.should be_true
@@ -232,26 +232,26 @@ describe FusionAuth::FusionAuthClient do
     response = client.register(id, {
       "user" => {
         "firstName" => "Crystal",
-        "lastName" => "Client",
-        "email" => "crystal.client.test@fusionauth.io",
-        "password" => "password"
+        "lastName"  => "Client",
+        "email"     => "crystal.client.test@fusionauth.io",
+        "password"  => "password",
       },
       "registration" => {
         "applicationId" => application_id,
-        "data" => {
-          "foo" => "bar"
+        "data"          => {
+          "foo" => "bar",
         },
         "preferredLanguages" => %w(en fr),
-        "roles" => %w(user)
-      }
+        "roles"              => %w(user),
+      },
     })
     response.was_successful.should be_true
 
     # Authenticate the user
     response = client.login({
-      "loginId" => "crystal.client.test@fusionauth.io",
-      "password" => "password",
-      "applicationId" => application_id
+      "loginId"       => "crystal.client.test@fusionauth.io",
+      "password"      => "password",
+      "applicationId" => application_id,
     })
     response.was_successful.should be_true
     response.success_response.not_nil!["user"]["email"].as_s.should eq("crystal.client.test@fusionauth.io")
@@ -266,12 +266,12 @@ describe FusionAuth::FusionAuthClient do
     response = client.update_registration(id, {
       "registration" => {
         "applicationId" => application_id,
-        "data" => {
-          "foo" => "bar updated"
+        "data"          => {
+          "foo" => "bar updated",
         },
         "preferredLanguages" => %w(en fr),
-        "roles" => %w(admin)
-      }
+        "roles"              => %w(admin),
+      },
     })
     response.was_successful.should be_true
     response.success_response.not_nil!["registration"]["roles"][0].as_s.should eq("admin")

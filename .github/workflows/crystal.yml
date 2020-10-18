@@ -59,7 +59,8 @@ jobs:
         FUSIONAUTH_API_KEY: "123456789"
 
     - name: Check file formatting
-      run: crystal tool format --check src spec
+      # ignoring auto-generated file
+      run: crystal tool format --check --exclude src/fusionauth/fusionauth_client.cr src spec
       if: always()
 
     - name: Dump docker logs on failure
