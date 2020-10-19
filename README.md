@@ -18,7 +18,7 @@ Once the shard is installed, you can call FusionAuth APIs like this:
 
 ```crystal
 require "uuid"
-require "fusionauth_client/fusionauth"
+require "fusionauth_client"
 
 # Construct the FusionAuth Client
 client = FusionAuth::FusionAuthClient.new(

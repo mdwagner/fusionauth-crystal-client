@@ -1,5 +1,6 @@
 require "json"
 require "uri"
+require "./version"
 require "./rest_client"
 
 #
@@ -702,7 +703,7 @@ module FusionAuth
     #
     # Deletes the users with the given ids, or users matching the provided JSON query or queryString.
     # The order of preference is ids, query and then queryString, it is recommended to only provide one of the three for the request.
-    # 
+    #
     # This method can be used to deactivate or permanently delete (hard-delete) users based upon the hardDelete boolean in the request body.
     # Using the dryRun parameter you may also request the result of the action without actually deleting or deactivating any users.
     #
@@ -719,7 +720,7 @@ module FusionAuth
     #
     # Deletes the users with the given ids, or users matching the provided JSON query or queryString.
     # The order of preference is ids, query and then queryString, it is recommended to only provide one of the three for the request.
-    # 
+    #
     # This method can be used to deactivate or permanently delete (hard-delete) users based upon the hardDelete boolean in the request body.
     # Using the dryRun parameter you may also request the result of the action without actually deleting or deactivating any users.
     #
@@ -973,7 +974,7 @@ module FusionAuth
     # Bulk imports refresh tokens. This request performs minimal validation and runs batch inserts of refresh tokens with the
     # expectation that each token represents a user that already exists and is registered for the corresponding FusionAuth
     # Application. This is done to increases the insert performance.
-    # 
+    #
     # Therefore, if you encounter an error due to a database key violation, the response will likely offer a generic
     # explanation. If you encounter an error, you may optionally enable additional validation to receive a JSON response
     # body with specific validation errors. This will slow the request down but will allow you to identify the cause of
@@ -992,7 +993,7 @@ module FusionAuth
     # Bulk imports users. This request performs minimal validation and runs batch inserts of users with the expectation
     # that each user does not yet exist and each registration corresponds to an existing FusionAuth Application. This is done to
     # increases the insert performance.
-    # 
+    #
     # Therefore, if you encounter an error due to a database key violation, the response will likely offer
     # a generic explanation. If you encounter an error, you may optionally enable additional validation to receive a JSON response
     # body with specific validation errors. This will slow the request down but will allow you to identify the cause of the failure. See
@@ -1030,8 +1031,8 @@ module FusionAuth
     end
 
     #
-    # Authenticates a user to FusionAuth. 
-    # 
+    # Authenticates a user to FusionAuth.
+    #
     # This API optionally requires an API key. See <code>Application.loginConfiguration.requireAuthentication</code>.
     #
     # @param request [Hash] The login request that contains the user credentials used to log them in.
@@ -1411,7 +1412,7 @@ module FusionAuth
 
     #
     # Request a refresh of the User search index. This API is not generally necessary and the search index will become consistent in a
-    # reasonable amount of time. There may be scenarios where you may wish to manually request an index refresh. One example may be 
+    # reasonable amount of time. There may be scenarios where you may wish to manually request an index refresh. One example may be
     # if you are using the Search API or Delete Tenant API immediately following a User Create etc, you may wish to request a refresh to
     #  ensure the index immediately current before making a query request to the search index.
     #
@@ -2006,9 +2007,9 @@ module FusionAuth
     end
 
     #
-    # Retrieves the password validation rules for a specific tenant. This method requires a tenantId to be provided 
+    # Retrieves the password validation rules for a specific tenant. This method requires a tenantId to be provided
     # through the use of a Tenant scoped API key or an HTTP header X-FusionAuth-TenantId to specify the Tenant Id.
-    # 
+    #
     # This API does not require an API key.
     #
     # @return [FusionAuth::ClientResponse] The ClientResponse object.
@@ -2020,7 +2021,7 @@ module FusionAuth
 
     #
     # Retrieves the password validation rules for a specific tenant.
-    # 
+    #
     # This API does not require an API key.
     #
     # @param tenant_id [String] The Id of the tenant.
