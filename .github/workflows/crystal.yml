@@ -26,7 +26,7 @@ jobs:
 
       fusionauth:
         # using custom image with built-in kickstart.json file
-        image: ghcr.io/mdwagner/containers:sha-6ad28b1
+        image: ghcr.io/mdwagner/containers:sha-e92c4e4
         ports:
           - "9011:9011"
         env:
